@@ -1,0 +1,30 @@
+---
+import "@/styles/global.css";
+import "leaflet/dist/leaflet.css";
+import { ClientRouter } from 'astro:transitions';
+import Map from '@/components/Map.astro';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+		<ClientRouter />
+	</head>
+	<body>
+		<div class="bg-[#222222] min-h-[100svh]">
+			<!-- <Map /> -->
+			<slot />
+		</div>
+	</body>
+</html>
+
+<style>
+body {
+	/* background-image: url(/images/wood-bg.jpeg);
+	background-size: cover; */
+}
+</style>

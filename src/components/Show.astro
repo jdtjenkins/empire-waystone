@@ -1,0 +1,19 @@
+---
+interface Props {
+	when: boolean
+}
+
+const { when } = Astro.props satisfies Props
+---
+
+{
+	when && (
+		<slot name="if" />
+	)
+}
+
+{
+	!when && (
+		<slot name="else" />
+	)
+}

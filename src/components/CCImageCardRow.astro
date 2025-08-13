@@ -1,0 +1,30 @@
+---
+import type { ImageMetadata } from '@/types/ImageMetadata'
+import CCImageCard from './CCImageCard.astro'
+import { type Props as Tag } from "./Tag.astro"
+
+export interface CardRow {
+	image: ImageMetadata,
+	imageAlt: string,
+	title: string,
+	description?: string,
+	href?: string,
+	tags?: Tag[],
+}
+
+export interface Props {
+	entries: CardRow[],
+}
+
+const {
+	entries,
+} = Astro.props satisfies Props
+---
+
+<div class="flex items-stretch justify-start gap-4 w-full overflow-auto @container [&>*]:basis-2/3 [&>*]:shrink-0 [&>*]:@md:basis-60">
+	{
+		entries.map(entry => (
+			<CCImageCard {entry} />
+		))
+	}
+</div>

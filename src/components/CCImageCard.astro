@@ -1,0 +1,43 @@
+---
+import { type CardRow } from './CCImageCardRow.astro'
+import Show from './Show.astro'
+import Tag from './Tag.astro'
+
+interface Props {
+	entry: CardRow,
+	class?: string,
+}
+
+const {
+	entry,
+	class: classes = "",
+} = Astro.props satisfies Props
+---
+
+<article
+	class="card bg-base-100 shadow-sm not-prose @container/imageCard"
+	class:list={[classes]}
+>
+	<figure class="w-full">
+		<img
+			src={ entry?.image?.src }
+			alt={ entry.imageAlt }
+			class="w-full h-full max-h-36 @md/imageCard:max-h-48 object-cover object-top"
+		/>
+	</figure>
+	<div class="card-body p-4">
+		<h2 class="font-semibold">{entry.title }</h2>
+		<Show when={!!entry.description}>
+			<p slot="if">{ entry.description }</p>
+		</Show>
+		<Show when={!!entry?.tags && entry.tags.length > 0}>
+			<div slot="if" class="flex flex-wrap">
+				{
+					entry?.tags?.map(tag => (
+						<Tag {...tag} />
+					))
+				}
+			</div>
+		</Show>
+	</div>
+</article>

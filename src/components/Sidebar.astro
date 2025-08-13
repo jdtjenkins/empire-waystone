@@ -1,0 +1,57 @@
+---
+import Parchment from './Parchment/Parchment.astro'
+---
+
+<div
+	id="sidebar"
+	class="fixed h-[90svh] right-[5svw] top-[5svh] w-[90svw] md:w-[350px] z-[1000] bg-transparent transition-all"
+	data-theme="light"
+>
+	<Parchment />
+	<div class="relative grid grid-rows-[1fr_auto] gap-4 h-full p-4">
+		<div class="contents">
+			<slot />
+		</div>
+
+		<div class="grid grid-cols-[2fr_1fr] gap-4">
+			<div>
+				<input
+					type="checkbox"
+					id="toggleSidebarSize"
+					class="hidden"
+				>
+				<label
+					for="toggleSidebarSize"
+					class="btn btn-primary w-full hidden md:inline-flex"
+				>
+					<span class="hidden" data-toggle-true>👉 Hide</span>
+					<span class="hidden" data-toggle-false>👈 Show</span>
+				</label>
+			</div>
+			<a
+				href="/"
+				class="btn btn-error w-full"
+			>
+				Close
+			</a>
+		</div>
+	</div>
+</div>
+
+<style>
+#sidebar:has(#toggleSidebarSize:checked) {
+	@apply w-[90svw];
+}
+
+#toggleSidebarSize:checked {
+	+ label [data-toggle-true] {
+		@apply flex;
+	}
+}
+
+#toggleSidebarSize:not(:checked) {
+	+ label [data-toggle-false] {
+		@apply flex;
+	}
+}
+</style>

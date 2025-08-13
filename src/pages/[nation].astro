@@ -1,0 +1,96 @@
+---
+import { type GetStaticPaths, type ImageMetadata } from "astro";
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content'
+import { render } from 'astro:content';
+import CCImageCardRow, { type CardRow } from '@/components/CCImageCardRow.astro';
+import Show from "@/components/Show.astro"
+import Layout from '@/components/Layouts/Layout.astro';
+import Sidebar from '@/components/Sidebar.astro';
+import Parchment2 from '@/components/Parchment/Parchment2.astro';
+
+export const getStaticPaths = (async () => {
+	const nationCollection = await getCollection("nations")
+	// const peopleCollection = await getCollection("people")
+	
+	const paths = await Promise.all(nationCollection.map(async entry => {
+		const notablePeople = (
+			await Promise
+				.all(entry.data.notablePeople?.map(person => getEntry(person.collection, person.id)) || [])
+		)
+			.filter(entry => !!entry)
+
+		const notablePeopleCards = notablePeople.map(({data: person}) => {
+			return {
+				title: person.name,
+				image: person.image,
+				imageAlt: person.imageAlt,
+				tags: person.titles?.map(title => ({ label: title, colour: "badge-primary" })) || [],
+			} satisfies CardRow
+		}) satisfies CardRow[]
+
+		return {
+			params: {
+				nation: entry.id
+			},
+			props: {
+				entry,
+				people: notablePeople,
+				peopleCards: notablePeopleCards,
+			},
+		}
+	}))
+
+	return paths
+}) satisfies GetStaticPaths
+
+interface Props {
+	entry: CollectionEntry<"nations">,
+	people: CollectionEntry<"people">[],
+	peopleCards: CardRow[],
+}
+
+const {
+	entry,
+	people,
+	peopleCards,
+} = Astro.props satisfies Props
+
+const { Content } = await render(entry as CollectionEntry<"nations">)
+---
+
+<Layout>
+	<div class="grid grid-cols-1 grid-rows-1 justify-stretch items-stretch min-h-[100svh]">
+		<div class="grid grid-cols-12 grid-rows-12 w-full h-full">
+			<div class="col-start-2 col-end-7 row-start-2 row-end-4 flex items-start justify-center flex-col">
+				<h1 class="block font-display text-6xl">
+					{ entry.data.name }
+				</h1>
+				<a href="/" class="block font-display text-parchment">Back</a>
+			</div>
+			<Parchment2 class="col-start-2 col-end-7 row-start-4 row-end-12 p-8!">
+				<h1>Hello</h1>
+			</Parchment2>
+
+			<Parchment2 class="col-start-8 col-end-12 row-start-2 row-end-7 p-8!">
+				<h1>Hello</h1>
+			</Parchment2>
+
+			<Parchment2 class="col-start-8 col-end-12 row-start-8 row-end-12 p-8!">
+				<h1>Hello</h1>
+			</Parchment2>
+		</div>
+	</div>
+	<!-- <Sidebar>
+		<article class="prose text-base-content bg-transparent w-full max-w-full" data-theme="light">
+			<Content />
+		
+			<Show when={people.length > 0}>
+				<section slot="if" class="">
+					<h2 class="font-bold text-lg mb-4">Notable People</h2>
+					<CCImageCardRow entries={peopleCards}>
+				</section>
+			</Show>
+		</article>
+	</Sidebar> -->
+</Layout>
+

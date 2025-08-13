@@ -1,0 +1,117 @@
+---
+import "leaflet/dist/leaflet.css";
+import Store from './Store.astro';
+---
+
+<Store id="nations" transition:persist />
+<div id="map" transition:persist=""></div>
+<!-- <div id="map_debug" class="fixed bottom-4 left-4"></div> -->
+
+<style>
+#map {
+	height: 100vh;
+	width: 100vw;
+}
+</style>
+
+<style is:global>
+.leaflet-container {
+	background: none !important;
+}
+</style>
+
+<script>
+import {
+	CRS,
+	Map,
+	TileLayer,
+	ImageOverlay,
+	Marker,
+	Polygon,
+	Popup,
+} from "leaflet";
+import { navigate } from 'astro:transitions/client';
+
+const tileSize = 256;
+const gridSize = 10;
+
+const imageSize = tileSize * gridSize;  // 2560
+
+// const bounds = [[0, 0], [imageSize, imageSize]]
+const bounds = [[-100, -100], [914 + 100, 1080 + 100]]
+const center = [(imageSize / 2), imageSize / 2]
+
+let map: Map
+
+document.addEventListener("astro:page-load", () => {
+	if (map) {
+		map.remove()
+		map = null as any
+	};
+
+	map = new Map("map", {
+		crs: CRS.Simple,
+		minZoom: -1,
+		maxZoom: 1,
+		zoom: -1,
+		maxBounds: [[-100, -100], [914 + 100, 1080 + 100]],
+		maxBoundsViscosity: 0.1,             // How "resistant" the bounds are
+		inertia: true,                       // You can also turn this off if needed
+		inertiaDeceleration: 1000,           // Higher = stops faster (default is 3000)
+		inertiaMaxSpeed: 10000,               // Lower = slows faster
+		zoomAnimation: true,                 // Keep this true for smoothness
+		zoomAnimationThreshold: 4,
+	})
+	
+	const tileLayer = new ImageOverlay("/anvil.jpg", [[0, 0], [914, 1080]]).addTo(map)
+	
+	map
+		// .fitBounds(bounds)
+		.setView([500, 500])
+	
+	map.on('click', e => {
+		const zoom = map.getZoom();              // Current zoom level
+		const point = map.project(e.latlng, zoom); // Project latlng to pixel coords at this zoom
+	
+		console.log(`y: ${ Math.abs(Math.floor(point.y)) }, x: ${ Math.floor(point.x) }`);
+	});
+	
+	// new Marker([0, 0]).addTo(map)
+	// new Marker([601, 724]).addTo(map)
+	// new Marker([(1 * tileSize), 0]).addTo(map)
+	// new Marker([2 * tileSize, 0]).addTo(map)
+	// new Marker([3 * tileSize, 0]).addTo(map)
+	// new Marker([4 * tileSize, 0]).addTo(map)
+	// new Marker([imageSize, imageSize]).addTo(map)
+	
+	const nations = JSON.parse(document.getElementById("store_nations")?.dataset?.nations || "{}") as any
+
+	const minZoom = -1;
+	const maxZoom = -1;
+	
+	for (const nation of nations) {
+		const nationPolygon = new Polygon(nation.data.coords, {
+			color: nation.data.colour,
+			
+		})
+			.addTo(map)
+	
+		nationPolygon.on("click", () => {
+			navigate(`/${ nation.id }`)
+		})
+
+		map.on('zoomend', () => {
+			const zoom = map.getZoom();
+			if (zoom >= minZoom && zoom <= maxZoom) {
+				if (!map.hasLayer(nationPolygon)) {
+				nationPolygon.addTo(map);
+				}
+			} else {
+				if (map.hasLayer(nationPolygon)) {
+				map.removeLayer(nationPolygon);
+				}
+			}
+		});
+	}
+})
+</script>

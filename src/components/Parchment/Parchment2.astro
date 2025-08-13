@@ -1,0 +1,28 @@
+---
+import imageUrl from "./parchment.png"
+
+interface Props {
+	class?: string;
+}
+
+const { class: _class = "" } = Astro.props satisfies Props
+---
+
+<div
+	class="parchment bg-transparent"
+	class:list={[_class]}
+	data-theme="light"
+>
+	<slot />
+</div>
+
+<style define:vars={{ imageUrl: `url("${ imageUrl.src }")`}} >
+.parchment {
+	padding: 1rem;
+	border-style: solid; /* ✅ required */
+	border-width: 10px; /* ✅ determines visible thickness */
+	border-image-source: var(--imageUrl);
+	border-image-slice: 200;
+	border-image-width: 200;
+}
+</style>

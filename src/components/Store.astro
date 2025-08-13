@@ -1,0 +1,16 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+	id?: string,
+}
+
+const {
+	id: _id = `${ Math.floor(performance.now()) }`
+} = Astro.props satisfies Props
+
+const id = `store_${ _id }`
+const nations = await getCollection("nations")
+---
+
+<div {id} data-nations={JSON.stringify(nations)}></div>

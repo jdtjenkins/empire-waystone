@@ -1,0 +1,20 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@plugin "daisyui";
+
+@font-face {
+	font-family: "Kelmscott";
+	src: url("/fonts/kelmscott/kelmscott.ttf") format("truetype");
+	font-display: swap;
+	font-weight: 400;
+}
+
+@utility btn {
+	@apply rounded-full;
+}
+
+@theme {
+	--font-display: "Kelmscott", "sans-serif";
+	--color-parchment: #d7d1ba;
+}
+
