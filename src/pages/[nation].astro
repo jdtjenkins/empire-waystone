@@ -88,7 +88,12 @@ const { Content } = await render(entry as CollectionEntry<"nations">)
 			</h1>
 
 			<div class="indicator-item">
-				<a href="/" class="btn btn-lg btn-circle">❌</a>
+				<a href="/" class="btn btn-circle btn-error">
+					<svg class="fill-slate-50" viewBox="0 0 24 24" width="32" height="32">
+						<rect x="10" y="3" width="4" height="18" rx="2" transform="rotate(45 12 12)"/>
+						<rect x="10" y="3" width="4" height="18" rx="2" transform="rotate(-45 12 12)"/>
+					</svg>
+				</a>
 			</div>
 
 			<article class="prose text-base-content bg-transparent w-full max-w-full" data-theme="light">
