@@ -13,16 +13,26 @@ const { class: _class = "" } = Astro.props satisfies Props
 	class:list={[_class]}
 	data-theme="light"
 >
-	<slot />
 </div>
 
 <style define:vars={{ imageUrl: `url("${ imageUrl.src }")`}} >
 .parchment {
-	padding: 1rem;
-	border-style: solid; /* ✅ required */
-	border-width: 10px; /* ✅ determines visible thickness */
+	position: absolute;
+	top: -10px;
+	left: -10px;
+	width: calc(100% + 10px);
+	height: calc(100% + 10px);
+	background-color: rgb(238, 238, 213);
+	/* border-style: solid; ✅ required
+	border-width: 10px;
 	border-image-source: var(--imageUrl);
-	border-image-slice: 200;
-	border-image-width: 200;
+	border-image-slice: 240;
+	border-image-width: 200; */
 }
+</style>
+
+<style is:global>
+/* *:has(> .parchment) {
+	position: relative;
+} */
 </style>

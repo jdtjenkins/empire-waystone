@@ -51,9 +51,9 @@ document.addEventListener("astro:page-load", () => {
 
 	map = new Map("map", {
 		crs: CRS.Simple,
-		minZoom: -1,
-		maxZoom: 1,
-		zoom: -1,
+		minZoom: 0,
+		maxZoom: 2,
+		zoom: 0,
 		maxBounds: [[-100, -100], [914 + 100, 1080 + 100]],
 		maxBoundsViscosity: 0.1,             // How "resistant" the bounds are
 		inertia: true,                       // You can also turn this off if needed
@@ -86,8 +86,8 @@ document.addEventListener("astro:page-load", () => {
 	
 	const nations = JSON.parse(document.getElementById("store_nations")?.dataset?.nations || "{}") as any
 
-	const minZoom = -1;
-	const maxZoom = -1;
+	const minZoom = 0;
+	const maxZoom = 1;
 	
 	for (const nation of nations) {
 		const nationPolygon = new Polygon(nation.data.coords, {

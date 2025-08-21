@@ -30,7 +30,7 @@ export const NationsSchema = z.object({
 	name: NationsEnum,
 	coords: z.array(z.array(z.number())),
 	colour: z.string(),
-	notablePeople: z.array(reference("people")),
+	notablePeople: z.array(reference("people")).optional(),
 })
 
 export const PeopleSchema = (image: SchemaContext["image"]) => z.object({
@@ -74,5 +74,24 @@ export const PeopleSchema = (image: SchemaContext["image"]) => z.object({
 		}
 	)
 
+export const PlacesSchema = (image: SchemaContext["image"]) => z.object({
+	name: z.string(),
+	description: z.string(),
+	nation: reference("nations"),
+	image: image().optional(),
+	imageAlt: z.string().optional(),
+})
+
+export const EventSchema = (image: SchemaContext["image"]) => z.object({
+	name: z.string(),
+	description: z.string(),
+	dateTime: z.coerce.date(),
+	location: PlacesSchema(image),
+	image: image().optional(),
+	imageAlt: z.string().optional(),
+})
+
 export type Nation = z.infer<typeof NationsSchema>
 export type Person = z.infer<ReturnType<typeof PeopleSchema>>
+export type Place = z.infer<ReturnType<typeof PlacesSchema>>
+export type Event = z.infer<ReturnType<typeof EventSchema>>
